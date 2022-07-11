@@ -5,6 +5,7 @@ int read_pulse = 7;  // yellow
 int trig_sham = 4;  // orange
 int read_sham = 6;  // blue
 
+
 void setup() {
   // Open serial connection
   Serial.begin(115200);
@@ -18,6 +19,7 @@ void setup() {
   pinMode(read_sham, INPUT_PULLUP);
 }
 
+
 void loop() {
   /* Read data from PC */
   recvcommand();
@@ -25,6 +27,7 @@ void loop() {
   /* Send to TMS */
   sendcommand();
 }
+
 
 void recvcommand() {
   /* Read serial buffer if it has anything */
@@ -34,6 +37,7 @@ void recvcommand() {
     recvd = true;
   }
 }
+
 
 void sendcommand() {
   int count = 0;
