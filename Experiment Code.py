@@ -10,9 +10,11 @@ pygame.init()  # start pygame
 mixer = pygame.mixer  # start audio mixer
 mixer.init()
 response_time = 2
+screen = pygame.display.set_mode((100, 100))
 
 # Connect to Arduino/TMS for triggering
-s = serial.Serial(port='/dev/tty.dummy', baudrate=115200)
+# s = serial.Serial(port='/dev/tty.dummy', baudrate=115200) @ unix
+s = serial.Serial("COM4", baudrate=115200)  # windows
 time.sleep(1)
 connected = s.read()
 
@@ -61,9 +63,9 @@ def testBlock():
             pass
 
         if not trial['catch']:  # if not catch
-            s.write(1)  # pulse real TMS coil
+            s.write(b'2')  # pulse real TMS coil (SWAPPED, SHOULD BE 1)
         else:  # if this is a catch trial...
-            s.write(2)  # pulse sham TMS coil
+            s.write(b'1')  # pulse sham TMS coil (SWAPPED, SHOULD BE 2)
 
         # reaction time measure not needed for verbal response
         '''start = time.time()  # log start of response window
