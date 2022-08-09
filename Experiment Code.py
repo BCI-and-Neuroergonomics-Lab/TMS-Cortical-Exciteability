@@ -5,7 +5,6 @@ import random
 import time
 import csv
 
-
 # Pygame constants and necessary code
 pygame.init()  # start pygame
 mixer = pygame.mixer  # start audio mixer
@@ -40,63 +39,53 @@ def wait(key, t):
                 pass
 
 
-def block():
-    # Generate randomized trial order (currently only one block of 16)
-    length = [50, 150, 250, 350]
-    condition = ['l', 'r', 'sh', 'sl']
-
+def testBlock():
+    # manual control of trial start/stop
+    length = [0] * 10
+    condition = ['Strong', 'Medium', 'Weak']
     trials = []
     for l in length:
-        for c in condition:  # for each audio file, make an object
-            trial = {
-                'filename': str(l) + c + '.wav',
-                'catch': False
-            }
-            trials.append(trial)
-    random.shuffle(trials)  # shuffle order of trials to be random
-
-    # Sprinkle in 4 catch blocks such that every 4 trials, at least 1 catch occurs
-    temp = [trials[i:i+4] for i in range(0, len(trials), 4)]  # new list of 4-element chunks from trials
-    for chunk in temp:  # for every chunk,
-        catch = {  # pick a random sound file to play and label as a catch trial (True)
-            'filename': str(length[random.randrange(4)]) + condition[random.randrange(4)] + '.wav',
-            'catch': True
+        trial = {
+            'filename': 'StrongLooming.wav',  # str(condition) + 'Looming.wav',
+            'catch': False
         }
-        # place catch in chunk at a random location
-        chunk.insert(random.randrange(len(chunk) + 1), catch)
-    # Rejoin all chunks into trial array
-    trials = sum(temp, [])
+        trials.append(trial)
 
-    # Begin block of trials
     for trial in trials:
+        print('ready')
+        wait('q', 1000)  # wait for keypress to trigger trial
+        print('FIRE!')
         sound = mixer.Sound(trial['filename'])  # load the sound
         channel = sound.play()  # start playing on a channel
         while channel.get_busy():  # do nothing until the channel is done playing
             pass
 
         if not trial['catch']:  # if not catch
-            s.write(2)  # pulse real TMS coil
-        else:    # if this is a catch trial...
-            s.write(3)  # pulse sham TMS coil
+            s.write(1)  # pulse real TMS coil
+        else:  # if this is a catch trial...
+            s.write(2)  # pulse sham TMS coil
 
-        start = time.time()  # log start of response window
+        # reaction time measure not needed for verbal response
+        '''start = time.time()  # log start of response window
         if wait('', response_time):  # wait for reaction time, max of "response_time" seconds
             end = time.time()  # log end of response window
             reaction_time = int(round((end - start) * 1000, 0))  # calculate trial RT in ms, convert it to integer
         else:  # if False, then >"response_time" elapsed
             reaction_time = -1  # set RT to -1, participant did not respond
-        print(reaction_time)
+        print(reaction_time)'''
 
+        reaction_time = 0  # placeholder for data output
         log[(trial['filename'], trial['catch'])] = reaction_time  # create a log: "150l.wav, False: 400"
         time.sleep(2 + random.uniform(0.0, 2.0))  # sleep for inter-trial interval
 
 
 log = {}  # data will be saved to a log dictionary object
+
 # Study is composed of 4 sessions, each with 5 blocks
 for sessions in range(0, 4):
     # Each with 5 blocks
     for blocks in range(0, 5):
-        block()  # run a non-training block for data collection
+        testBlock()  # run a non-training block for data collection
 
 # Once we're done, save log dictionary to a local file
 # dd_mm_YY_H_M.csv
