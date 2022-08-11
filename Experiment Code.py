@@ -48,7 +48,7 @@ def testBlock():
     trials = []
     for l in length:
         trial = {
-            'filename': 'StrongLooming.wav',  # str(condition) + 'Looming.wav',
+            'filename': 'MediumLooming.wav',  # str(condition) + 'Looming.wav',
             'catch': False
         }
         trials.append(trial)
@@ -63,9 +63,9 @@ def testBlock():
             pass
 
         if not trial['catch']:  # if not catch
-            s.write(b'2')  # pulse real TMS coil (SWAPPED, SHOULD BE 1)
+            s.write(b'2')  # pulse TMS 2
         else:  # if this is a catch trial...
-            s.write(b'1')  # pulse sham TMS coil (SWAPPED, SHOULD BE 2)
+            s.write(b'1')  # pulse TMS 1
 
         # reaction time measure not needed for verbal response
         '''start = time.time()  # log start of response window
